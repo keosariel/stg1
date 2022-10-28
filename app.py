@@ -13,5 +13,10 @@ def my_info():
         }
     )
 
+@app.after_request
+def add_header(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    return response
+
 if __name__ == '__main__':
     app.run(debug=True)
