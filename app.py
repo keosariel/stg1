@@ -20,12 +20,13 @@ calc_schema = {
 def validate_json(schema):
     def wrapper(func):
         def _validate(*args, **kwargs):
-            data = request.json
-            try:
-                validate(instance=data, schema=schema)
-            except ValidationError as e:
-                data = None
-            kwargs.update({"json_data": data})
+            if request.method == "POST":
+                data = request.json
+                try:
+                    validate(instance=data, schema=schema)
+                except ValidationError as e:
+                    data = None
+                kwargs.update({"json_data": data})
             return func(*args, **kwargs)
         return _validate
     return wrapper
@@ -37,7 +38,7 @@ def add_header(response):
 
 @app.route('/', methods=["GET", "POST"])
 @validate_json(calc_schema)
-def main(json_data):
+def main(json_data=None):
 
     if request.method == "GET":
         return jsonify(
