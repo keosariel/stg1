@@ -9,7 +9,7 @@ calc_schema = {
     "properties" : {
         "operation_type": {
             "type": "string",
-            "enum": ["+", "-", "/", "*"]
+            "enum": ["addition", "subtraction", "multiplication"]
         },
         "x":{"type": "number"},
         "y":{"type": "number"}
@@ -39,7 +39,11 @@ def add_header(response):
 @app.route('/', methods=["GET", "POST"])
 @validate_json(calc_schema)
 def main(json_data=None):
-
+    ops = {
+        "multiplication" : "*",
+        "addition": "+",
+        "subtraction":"-"
+    }
     if request.method == "GET":
         return jsonify(
             {
@@ -51,10 +55,11 @@ def main(json_data=None):
         )
     else:
         if json_data:
-            op = json_data["operation_type"]
+            _op = json_data["operation_type"]
+            op = ops.get(_op, "+")
             eval_str = f"{json_data['x']} {op} {json_data['y']}"
             result = eval(eval_str)
-            return {"slackUsername": s_name, "operation_type": op, "result": result}
+            return {"slackUsername": s_name, "operation_type": _op, "result": result}
 
 if __name__ == '__main__':
     app.run(debug=True)
