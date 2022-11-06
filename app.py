@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from jsonschema import validate, ValidationError
 
 app = Flask(__name__)
-s_name = "gabriel"
+s_name = "gabriella"
 
 calc_schema = {
     "type": "object",
